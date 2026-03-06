@@ -1,65 +1,110 @@
-import Image from "next/image";
+import NavigationBar from "./components/NavigationBar";
+import { GoOrganization } from "react-icons/go";
+import { FaArrowRight } from "react-icons/fa6";
 
-export default function Home() {
+const page = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      {/* Navigation Bar */}
+      <NavigationBar />
+
+      {/* Hero */}
+      <div
+        className="hero min-h-150"
+        style={{
+          backgroundImage:
+            "url(https://img.freepik.com/free-photo/successful-happy-business-team_53876-74892.jpg?semt=ais_hybrid&w=740&q=80",
+        }}
+      >
+        <div className="hero-overlay"></div>
+        <div className="hero-content text-neutral-content text-center">
+          <div className="max-w-lg">
+            <h1 className="mb-5 text-5xl font-bold">Find your next dream job in tech</h1>
+            <p className="mb-5">
+              Browse thousands of curated roles at the world's best tech companies. From startups to industry leaders — your next opportunity is here.
+            </p>
+            <button className="btn btn-primary">Get Started</button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* Featured */}
+      <div className="text-center font-semibold text-2xl text-blue-600 mt-10 mb-5">Browse Our Featured Jobs</div>
+
+      {/* Job Cards */}
+      <div className="flex mb-10">
+        <div className="m-auto max-w-7xl grid lg:grid-cols-3 md:grid-cols-2 gap-y-2.5 sm:grid-cols-1 gap-x-10">
+
+          <div className="card card-border bg-white w-105 shadow-md">
+            <div className="card-body">
+              <h2 className="card-title">
+                <GoOrganization className="text-5xl" />
+                <div>
+                  <p className="">Architecture Engineer</p>
+                  <p className="px-1 text-xs font-normal">Cool Company</p>
+                </div>
+              </h2>
+              <div className="mt-2">
+                <p className="badge badge-success badge-soft mr-3 px-1.5">Full-Time</p>
+                <p className="badge badge-primary badge-soft px-1.5">Senior</p>
+              </div>
+              <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-primary">
+                  <FaArrowRight />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="card card-border bg-white w-105">
+            <div className="card-body">
+              <h2 className="card-title">
+                <GoOrganization className="text-5xl" />
+                <div>
+                  <p className="">Architecture Engineer</p>
+                  <p className="px-1 text-xs font-normal">Cool Company</p>
+                </div>
+              </h2>
+              <div className="mt-2">
+                <p className="badge badge-success badge-soft mr-3 px-1.5">Full-Time</p>
+                <p className="badge badge-primary badge-soft px-1.5">Senior</p>
+              </div>
+              <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-primary">
+                  <FaArrowRight />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="card card-border bg-white w-105">
+            <div className="card-body">
+              <h2 className="card-title">
+                <GoOrganization className="text-5xl" />
+                <div>
+                  <p className="">Architecture Engineer</p>
+                  <p className="px-1 text-xs font-normal">Cool Company</p>
+                </div>
+              </h2>
+              <div className="mt-2">
+                <p className="badge badge-success badge-soft mr-3 px-1.5">Full-Time</p>
+                <p className="badge badge-primary badge-soft px-1.5">Senior</p>
+              </div>
+              <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-primary">
+                  <FaArrowRight />
+                </button>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </main>
+      </div>
     </div>
-  );
+  )
 }
+
+export default page
