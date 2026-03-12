@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { jobsTable } from "@/lib/db/jobs";
+import { applicationsTable } from "@/lib/db/applications";
 import { eq } from "drizzle-orm";
 
 const UUID_REGEX =
@@ -28,7 +29,17 @@ export async function GET(
       return NextResponse.json({ error: "Job not found." }, { status: 404 });
     }
 
-    return NextResponse.json({ job: job[0] });
+    const applications = await db
+      .select({ id: applicationsTable.id })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.jobId, id));
+
+    return NextResponse.json({
+      job: {
+        ...job[0],
+        applicantsCount: applications.length,
+      },
+    });
   } catch {
     return NextResponse.json({ error: "Failed to fetch job." }, { status: 500 });
   }

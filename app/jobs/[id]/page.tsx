@@ -103,7 +103,7 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
                         level={job.experienceLevel}
                         location={job.location}
                         salary={salaryText}
-                        applicants="N/A"
+                        applicants={`${job.applicantsCount ?? 0}`}
                         posted={postedText}
                     />
                     <JobDetails

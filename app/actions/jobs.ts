@@ -20,6 +20,7 @@ export type Job = {
   deadline: string | null
   postedAt: string
   updatedAt: string
+  applicantsCount?: number
 }
 
 export type CreateJobPayload = {
