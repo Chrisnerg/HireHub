@@ -27,7 +27,6 @@ const page = () => {
         const token = getToken()
         if (!token) { setLoading(false); return }
 
-        // Decode name from JWT payload
         try {
             const payload = JSON.parse(atob(token.split(".")[1]))
             if (payload.email) setUserName(payload.email.split("@")[0])

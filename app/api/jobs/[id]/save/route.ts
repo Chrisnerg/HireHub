@@ -18,7 +18,7 @@ export const POST = async (req: Request, { params }: { params: Promise<{ id: str
             return NextResponse.json({ error: "Invalid job id." }, { status: 400 });
         }
 
-        // checking if the job exists in the jobs table
+        // Ensure the target job exists.
         const [job] = await db
             .select({ id: jobsTable.id })
             .from(jobsTable)
@@ -29,14 +29,14 @@ export const POST = async (req: Request, { params }: { params: Promise<{ id: str
             return NextResponse.json({ error: "Job not found." }, { status: 404 });
         }
 
-        // Checking if the job exists in saved jobs table
+        // Check whether this job is already saved by the user.
         const [existingSave] = await db
             .select({ id: savedJobs.id })
             .from(savedJobs)
             .where(and(eq(savedJobs.userId, user.id), eq(savedJobs.jobId, id)))
             .limit(1);
 
-        // unsave/delete if the job exists
+        // If already saved, remove it (toggle off).
         if (existingSave) {
             await db
                 .delete(savedJobs)
@@ -45,7 +45,7 @@ export const POST = async (req: Request, { params }: { params: Promise<{ id: str
             return NextResponse.json({ success: true, action: "unsaved" }, { status: 200 });
         }
 
-        // Insert/save new job
+        // Otherwise save it (toggle on).
         const [savedJob] = await db.insert(savedJobs).values({
             userId: user.id,
             jobId: id

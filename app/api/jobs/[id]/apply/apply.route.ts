@@ -3,7 +3,7 @@ import { applicationsTable } from "@/lib/db/applications";
 import { verifyAuth } from "@/app/middleware/auth.middleware";
 import { NextResponse } from "next/server";
 
-// POST /api/jobs/:id/apply -> API endpoint for applying for a job.
+// POST /api/jobs/:id/apply -> Create an application for the authenticated user.
 export const POST = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
         const user = verifyAuth(req);

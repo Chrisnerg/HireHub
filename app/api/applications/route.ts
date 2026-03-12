@@ -4,7 +4,7 @@ import { verifyAuth } from "@/app/middleware/auth.middleware";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
-// GET /api/applications -> Get all applications
+// GET /api/applications -> Get applications for the authenticated user.
 export const GET = async (req: Request) => {
     try{
         const user = verifyAuth(req);
