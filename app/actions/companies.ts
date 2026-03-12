@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
@@ -14,16 +16,21 @@ export type Company = {
 }
 
 export async function getCompanies(): Promise<Company[]> {
-  const res = await fetch(`${getBaseUrl()}/api/companies`)
-  const data = await res.json()
-  return data.companies ?? []
+  try {
+    const { data } = await axios.get(`${getBaseUrl()}/api/companies`)
+    return data.companies ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function getCompanyById(id: string): Promise<Company | null> {
-  const res = await fetch(`${getBaseUrl()}/api/companies/${id}`)
-  if (!res.ok) return null
-  const data = await res.json()
-  return data.company ?? null
+  try {
+    const { data } = await axios.get(`${getBaseUrl()}/api/companies/${id}`)
+    return data.company ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function createCompany(payload: {
@@ -35,10 +42,14 @@ export async function createCompany(payload: {
   size?: string
   websiteUrl?: string
 }) {
-  const res = await fetch(`/api/companies`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-  return res.json()
+  try {
+    const { data } = await axios.post(`/api/companies`, payload)
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data
+    }
+
+    return { error: "Failed creating company." }
+  }
 }

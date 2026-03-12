@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export type Application = {
   id: string
   userId: string
@@ -8,27 +10,42 @@ export type Application = {
 }
 
 export async function applyToJob(token: string, jobId: string) {
-  const res = await fetch(`/api/jobs/${jobId}/apply`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res.json() as Promise<{ success?: boolean; applicationId?: string; error?: string }>
+  try {
+    const { data } = await axios.post(
+      `/api/jobs/${jobId}/apply`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    return data as { success?: boolean; applicationId?: string; error?: string }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data as { success?: boolean; applicationId?: string; error?: string }
+    }
+
+    return { error: "Failed to apply to job." }
+  }
 }
 
 export async function getUserApplications(token: string): Promise<Application[]> {
-  const res = await fetch(`/api/applications`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const data = await res.json()
-  return data.userApplications ?? []
+  try {
+    const { data } = await axios.get(`/api/applications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data.userApplications ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function getAdminApplications(token: string): Promise<Application[]> {
-  const res = await fetch(`/api/admin/applications`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const data = await res.json()
-  return data.allApplications ?? []
+  try {
+    const { data } = await axios.get(`/api/admin/applications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data.allApplications ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function updateAdminApplicationStatus(
@@ -36,14 +53,23 @@ export async function updateAdminApplicationStatus(
   applicationId: string,
   status: Application["status"]
 ) {
-  const res = await fetch(`/api/admin/applications`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ applicationId, status }),
-  })
+  try {
+    const { data } = await axios.patch(
+      `/api/admin/applications`,
+      { applicationId, status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
 
-  return res.json() as Promise<{ applicationId?: string; error?: string }>
+    return data as { applicationId?: string; error?: string }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data as { applicationId?: string; error?: string }
+    }
+
+    return { error: "Failed to update application status." }
+  }
 }

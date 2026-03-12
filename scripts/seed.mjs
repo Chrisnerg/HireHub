@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const BASE = "http://localhost:3000"
 
 // ─── USERS ────────────────────────────────────────────────────────────────────
@@ -86,12 +88,16 @@ const jobTemplates = (companyIds) => [
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 async function post(path, body) {
-  const res = await fetch(`${BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  })
-  return res.json()
+  try {
+    const { data } = await axios.post(`${BASE}${path}`, body)
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data
+    }
+
+    throw error
+  }
 }
 
 function green(msg) { process.stdout.write(`\x1b[32m✓ ${msg}\x1b[0m\n`) }

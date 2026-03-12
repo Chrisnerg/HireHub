@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
@@ -37,46 +39,73 @@ export type CreateJobPayload = {
 }
 
 export async function getJobs(): Promise<Job[]> {
-  const res = await fetch(`${getBaseUrl()}/api/jobs`)
-  const data = await res.json()
-  return data.jobs ?? []
+  try {
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs`)
+    return data.jobs ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function getFeaturedJobs(): Promise<Job[]> {
-  const res = await fetch(`${getBaseUrl()}/api/jobs?featured=true`)
-  const data = await res.json()
-  return data.featuredJobs ?? []
+  try {
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs?featured=true`)
+    return data.featuredJobs ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
-  const res = await fetch(`${getBaseUrl()}/api/jobs/${id}`)
-  if (!res.ok) return null
-  const data = await res.json()
-  return data.job ?? null
+  try {
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs/${id}`)
+    return data.job ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function createJob(token: string, payload: CreateJobPayload) {
-  const res = await fetch(`/api/jobs`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify(payload),
-  })
-  return res.json()
+  try {
+    const { data } = await axios.post(`/api/jobs`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data
+    }
+
+    return { error: "Failed to create job." }
+  }
 }
 
 export async function updateJob(token: string, id: string, payload: Partial<CreateJobPayload>) {
-  const res = await fetch(`/api/jobs/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify(payload),
-  })
-  return res.json()
+  try {
+    const { data } = await axios.patch(`/api/jobs/${id}`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data
+    }
+
+    return { error: "Failed to update job." }
+  }
 }
 
 export async function deleteJob(token: string, id: string) {
-  const res = await fetch(`/api/jobs/${id}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res.json()
+  try {
+    const { data } = await axios.delete(`/api/jobs/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data
+    }
+
+    return { error: "Failed to delete job." }
+  }
 }

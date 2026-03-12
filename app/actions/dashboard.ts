@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export type DashboardStats = {
   totalApplied: number
   inInterview: number
@@ -6,8 +8,12 @@ export type DashboardStats = {
 }
 
 export async function getDashboardStats(token: string): Promise<DashboardStats> {
-  const res = await fetch(`/api/dashboard/stats`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res.json()
+  try {
+    const { data } = await axios.get(`/api/dashboard/stats`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch {
+    return { totalApplied: 0, inInterview: 0, offers: 0, savedCount: 0 }
+  }
 }

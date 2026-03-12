@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export type AdminStats = {
   activeJobs: number
   totalApplicants: number
@@ -16,24 +18,38 @@ export type AdminUser = {
 }
 
 export async function getAdminStats(token: string): Promise<AdminStats> {
-  const res = await fetch(`/api/admin/stats`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res.json()
+  try {
+    const { data } = await axios.get(`/api/admin/stats`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data
+  } catch {
+    return { activeJobs: 0, totalApplicants: 0, inInterview: 0, offersExtended: 0 }
+  }
 }
 
 export async function getAdminUsers(token: string): Promise<AdminUser[]> {
-  const res = await fetch(`/api/admin/users`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const data = await res.json()
-  return data.allUsers ?? []
+  try {
+    const { data } = await axios.get(`/api/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data.allUsers ?? []
+  } catch {
+    return []
+  }
 }
 
 export async function deleteAdminUser(token: string, userId: string) {
-  const res = await fetch(`/api/admin/users/${userId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return res.json() as Promise<{ success?: boolean; error?: string }>
+  try {
+    const { data } = await axios.delete(`/api/admin/users/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return data as { success?: boolean; error?: string }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      return error.response.data as { success?: boolean; error?: string }
+    }
+
+    return { error: "Failed to delete user." }
+  }
 }
