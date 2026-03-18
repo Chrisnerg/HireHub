@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { decodeToken, login, setToken } from "../actions/auth"
+import FormInput from "../components/FormInput"
 
 const LoginPage = () => {
     const router = useRouter()
@@ -42,34 +43,24 @@ const LoginPage = () => {
 
                 <div className="bg-white rounded-2xl border border-slate-300/70 shadow-sm p-8">
                     <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                Email address
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                className="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800/30 focus:border-emerald-800 transition"
-                                placeholder="you@example.com"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={form.password}
-                                onChange={handleChange}
-                                className="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800/30 focus:border-emerald-800 transition"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
+                        <FormInput
+                            label="Email address"
+                            type="email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            placeholder="you@example.com"
+                            required
+                        />
+                        <FormInput
+                            label="Password"
+                            type="password"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            required
+                        />
 
                         {error && (
                             <p className="text-sm text-red-500">{error}</p>

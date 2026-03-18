@@ -8,6 +8,8 @@ import { getCompanies, type Company } from "../actions/companies"
 import { getAdminApplications } from "../actions/applications"
 import { getToken } from "../actions/auth"
 import Loading from "../loading"
+import { capitalize } from "@/lib/utils"
+import DataTable from "./DataTable"
 
 const AdminManageJobs = () => {
     const [jobs, setJobs] = useState<Job[]>([])
@@ -52,43 +54,30 @@ const AdminManageJobs = () => {
         <>
             <h1 className="text-2xl font-bold mb-6">Manage Jobs</h1>
             <div className="bg-white rounded-lg shadow p-6">
-                {jobs.length === 0 ? (
-                    <p className="text-gray-400 text-sm">No jobs posted yet.</p>
-                ) : (
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="text-neutral-500 text-left">
-                                <th className="py-2">Job Title</th>
-                                <th className="py-2">Company</th>
-                                <th className="py-2">Type</th>
-                                <th className="py-2">Applicants</th>
-                                <th className="py-2">Status</th>
-                                <th className="py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {jobs.map((job) => (
-                                <tr key={job.id}>
-                                    <td className="py-2">{job.title}</td>
-                                    <td>{companyMap[job.companyId]?.name ?? "Unknown"}</td>
-                                    <td>{job.type}</td>
-                                    <td className="font-bold">{appCountMap[job.id] ?? 0}</td>
-                                    <td>
-                                        <span className={`px-2 py-1 rounded text-xs ${job.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
-                                            {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="inline-flex gap-2">
-                                            <Button size="xs" variant="outline"><FiEdit2 /></Button>
-                                            <Button size="xs" variant="destructive" onClick={() => handleDelete(job.id)}><FiTrash2 /></Button>
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
+                <DataTable
+                    columns={["Job Title", "Company", "Type", "Applicants", "Status", "Actions"]}
+                    data={jobs}
+                    emptyMessage="No jobs posted yet."
+                    renderRow={(job) => (
+                        <tr key={job.id}>
+                            <td className="py-2">{job.title}</td>
+                            <td>{companyMap[job.companyId]?.name ?? "Unknown"}</td>
+                            <td>{job.type}</td>
+                            <td className="font-bold">{appCountMap[job.id] ?? 0}</td>
+                            <td>
+                                <span className={`px-2 py-1 rounded text-xs ${job.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
+                                    {capitalize(job.status)}
+                                </span>
+                            </td>
+                            <td>
+                                <span className="inline-flex gap-2">
+                                    <Button size="xs" variant="outline"><FiEdit2 /></Button>
+                                    <Button size="xs" variant="destructive" onClick={() => handleDelete(job.id)}><FiTrash2 /></Button>
+                                </span>
+                            </td>
+                        </tr>
+                    )}
+                />
             </div>
         </>
     )

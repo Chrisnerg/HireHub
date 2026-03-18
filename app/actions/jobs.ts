@@ -1,7 +1,15 @@
 import axios from "axios"
+import type { ExperienceLevel, JobStatus, JobType } from "@/lib/constants"
 
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+
+const serverInternalRequestConfig =
+  typeof window === "undefined"
+    ? {
+        proxy: false as const,
+      }
+    : undefined
 
 export type Job = {
   id: string
@@ -10,12 +18,12 @@ export type Job = {
   description: string
   requirements: string | null
   skills: string[] | null
-  type: "full-time" | "part-time" | "contract" | "internship"
-  experienceLevel: "intern" | "junior" | "mid" | "senior" | "lead"
+  type: JobType
+  experienceLevel: ExperienceLevel
   location: string
   salaryMin: number | null
   salaryMax: number | null
-  status: "active" | "closed"
+  status: JobStatus
   isFeatured: boolean
   deadline: string | null
   postedAt: string
@@ -41,7 +49,7 @@ export type CreateJobPayload = {
 
 export async function getJobs(): Promise<Job[]> {
   try {
-    const { data } = await axios.get(`${getBaseUrl()}/api/jobs`)
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs`, serverInternalRequestConfig)
     return data.jobs ?? []
   } catch {
     return []
@@ -50,7 +58,7 @@ export async function getJobs(): Promise<Job[]> {
 
 export async function getFeaturedJobs(): Promise<Job[]> {
   try {
-    const { data } = await axios.get(`${getBaseUrl()}/api/jobs?featured=true`)
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs?featured=true`, serverInternalRequestConfig)
     return data.featuredJobs ?? []
   } catch {
     return []
@@ -59,7 +67,7 @@ export async function getFeaturedJobs(): Promise<Job[]> {
 
 export async function getJobById(id: string): Promise<Job | null> {
   try {
-    const { data } = await axios.get(`${getBaseUrl()}/api/jobs/${id}`)
+    const { data } = await axios.get(`${getBaseUrl()}/api/jobs/${id}`, serverInternalRequestConfig)
     return data.job ?? null
   } catch {
     return null

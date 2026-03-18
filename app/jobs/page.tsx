@@ -14,7 +14,7 @@ import { getCompanies } from "../actions/companies";
 
 const JOBS_PER_PAGE = 6
 
-const page = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
+const JobsPage = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
     const { page: pageParam } = await searchParams
     const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1)
 
@@ -101,4 +101,4 @@ const page = async ({ searchParams }: { searchParams: Promise<{ page?: string }>
     )
 }
 
-export default page
+export default JobsPage

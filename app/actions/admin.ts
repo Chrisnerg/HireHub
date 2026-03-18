@@ -1,4 +1,5 @@
 import axios from "axios"
+import { handleApiError } from "@/lib/utils"
 
 export type AdminStats = {
   activeJobs: number
@@ -17,14 +18,22 @@ export type AdminUser = {
   updatedAt: string
 }
 
-export async function getAdminStats(token: string): Promise<AdminStats> {
+export type AdminStatsResult = {
+  data: AdminStats
+  error?: string
+}
+
+export async function getAdminStats(token: string): Promise<AdminStatsResult> {
   try {
     const { data } = await axios.get(`/api/admin/stats`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    return data
+    return { data }
   } catch {
-    return { activeJobs: 0, totalApplicants: 0, inInterview: 0, offersExtended: 0 }
+    return {
+      data: { activeJobs: 0, totalApplicants: 0, inInterview: 0, offersExtended: 0 },
+      error: "Failed to load admin stats.",
+    }
   }
 }
 
@@ -46,10 +55,9 @@ export async function deleteAdminUser(token: string, userId: string) {
     })
     return data as { success?: boolean; error?: string }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.data) {
-      return error.response.data as { success?: boolean; error?: string }
+    return handleApiError(error, { error: "Failed to delete user." }) as {
+      success?: boolean
+      error?: string
     }
-
-    return { error: "Failed to delete user." }
   }
 }

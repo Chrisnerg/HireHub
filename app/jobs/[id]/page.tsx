@@ -12,7 +12,7 @@ import { getJobById, getJobs, type Job } from "@/app/actions/jobs"
 import { getCompanyById, getCompanies, type Company } from "@/app/actions/companies"
 import Loading from "@/app/loading"
 
-const page = ({ params }: { params: Promise<{ id: string }> }) => {
+const JobDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = use(params)
     const [job, setJob] = useState<Job | null>(null)
     const [company, setCompany] = useState<Company | null>(null)
@@ -130,4 +130,4 @@ const page = ({ params }: { params: Promise<{ id: string }> }) => {
     )
 }
 
-export default page
+export default JobDetailsPage

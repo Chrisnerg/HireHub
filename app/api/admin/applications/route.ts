@@ -2,12 +2,8 @@ import db from "@/lib/db";
 import { applicationsTable } from "@/lib/db/applications";
 import { verifyAuth } from "@/app/middleware/auth.middleware";
 import { NextResponse } from "next/server";
+import { APPLICATION_STATUSES, UUID_REGEX, type ApplicationStatus } from "@/lib/constants";
 import { eq } from "drizzle-orm";
-
-const VALID_APPLICATION_STATUSES = ["applied", "reviewing", "interview", "offer", "rejected"] as const;
-
-const UUID_REGEX =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 // GET /api/admin/applications -> Fetch all applications across all job postings
 export const GET = async (req: Request) => {
@@ -68,17 +64,17 @@ export const PATCH = async (req: Request) => {
 
         if (
             typeof status !== "string" ||
-            !VALID_APPLICATION_STATUSES.includes(status as (typeof VALID_APPLICATION_STATUSES)[number])
+            !APPLICATION_STATUSES.includes(status as ApplicationStatus)
         ) {
             return NextResponse.json(
-                { error: `Invalid status. Must be one of: ${VALID_APPLICATION_STATUSES.join(", ")}.` },
+                { error: `Invalid status. Must be one of: ${APPLICATION_STATUSES.join(", ")}.` },
                 { status: 400 }
             );
         }
 
         const result = await db
             .update(applicationsTable)
-            .set({ status: status as (typeof VALID_APPLICATION_STATUSES)[number], updatedAt: new Date() })
+            .set({ status: status as ApplicationStatus, updatedAt: new Date() })
             .where(eq(applicationsTable.id, applicationId))
             .returning({ applicationId: applicationsTable.id });
 

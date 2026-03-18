@@ -2,14 +2,8 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { jobsTable } from "@/lib/db/jobs";
 import { applicationsTable } from "@/lib/db/applications";
+import { EXPERIENCE_LEVELS, JOB_STATUSES, JOB_TYPES, UUID_REGEX, type ExperienceLevel, type JobStatus, type JobType } from "@/lib/constants";
 import { eq } from "drizzle-orm";
-
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-const VALID_JOB_TYPES = ['full-time', 'part-time', 'contract', 'internship'] as const;
-const VALID_EXPERIENCE_LEVELS = ['intern', 'junior', 'mid', 'senior', 'lead'] as const;
-const VALID_JOB_STATUSES = ['active', 'closed'] as const;
 
 // GET /api/jobs/:id
 export async function GET(
@@ -68,23 +62,23 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
   if (payload.location !== undefined) updatedJob.location = payload.location as string;
 
   if (payload.type !== undefined) {
-    if (!VALID_JOB_TYPES.includes(payload.type as typeof VALID_JOB_TYPES[number])) {
+    if (!JOB_TYPES.includes(payload.type as JobType)) {
       return NextResponse.json(
-        { error: `Invalid type. Must be one of: ${VALID_JOB_TYPES.join(', ')}.` },
+        { error: `Invalid type. Must be one of: ${JOB_TYPES.join(', ')}.` },
         { status: 400 }
       );
     }
-    updatedJob.type = payload.type as typeof VALID_JOB_TYPES[number];
+    updatedJob.type = payload.type as JobType;
   }
 
   if (payload.experienceLevel !== undefined) {
-    if (!VALID_EXPERIENCE_LEVELS.includes(payload.experienceLevel as typeof VALID_EXPERIENCE_LEVELS[number])) {
+    if (!EXPERIENCE_LEVELS.includes(payload.experienceLevel as ExperienceLevel)) {
       return NextResponse.json(
-        { error: `Invalid experienceLevel. Must be one of: ${VALID_EXPERIENCE_LEVELS.join(', ')}.` },
+        { error: `Invalid experienceLevel. Must be one of: ${EXPERIENCE_LEVELS.join(', ')}.` },
         { status: 400 }
       );
     }
-    updatedJob.experienceLevel = payload.experienceLevel as typeof VALID_EXPERIENCE_LEVELS[number];
+    updatedJob.experienceLevel = payload.experienceLevel as ExperienceLevel;
   }
 
   if (payload.isFeatured !== undefined) {
@@ -121,13 +115,13 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
   }
 
   if (payload.status !== undefined) {
-    if (!VALID_JOB_STATUSES.includes(payload.status as typeof VALID_JOB_STATUSES[number])) {
+    if (!JOB_STATUSES.includes(payload.status as JobStatus)) {
       return NextResponse.json(
-        { error: `Invalid status. Must be one of: ${VALID_JOB_STATUSES.join(', ')}.` },
+        { error: `Invalid status. Must be one of: ${JOB_STATUSES.join(', ')}.` },
         { status: 400 }
       );
     }
-    updatedJob.status = payload.status as typeof VALID_JOB_STATUSES[number];
+    updatedJob.status = payload.status as JobStatus;
   }
 
   if (Object.keys(updatedJob).length === 0) {

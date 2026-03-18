@@ -1,4 +1,5 @@
 import axios from "axios"
+import { handleApiError } from "@/lib/utils"
 
 const TOKEN_KEY = "hirehub_token"
 
@@ -13,11 +14,11 @@ export async function login(email: string, password: string) {
     const { data } = await axios.post(`/api/auth/login`, { email, password })
     return data as { success?: boolean; token?: string; error?: string }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.data) {
-      return error.response.data as { success?: boolean; token?: string; error?: string }
+    return handleApiError(error, { error: "Failed to sign in." }) as {
+      success?: boolean
+      token?: string
+      error?: string
     }
-
-    return { error: "Failed to sign in." }
   }
 }
 
@@ -26,11 +27,10 @@ export async function signup(name: string, email: string, password: string, role
     const { data } = await axios.post(`/api/users`, { name, email, password, role })
     return data as { userId?: string; error?: string }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.data) {
-      return error.response.data as { userId?: string; error?: string }
+    return handleApiError(error, { error: "Failed to create account." }) as {
+      userId?: string
+      error?: string
     }
-
-    return { error: "Failed to create account." }
   }
 }
 

@@ -8,14 +8,8 @@ import { getJobs, type Job } from "../actions/jobs"
 import { getCompanies, type Company } from "../actions/companies"
 import { getToken } from "../actions/auth"
 import Loading from "../loading"
-
-const statusOptions = [
-    { label: "Applied", value: "applied", color: "bg-blue-100 text-blue-700" },
-    { label: "Reviewing", value: "reviewing", color: "bg-orange-100 text-orange-700" },
-    { label: "Interview", value: "interview", color: "bg-purple-100 text-purple-700" },
-    { label: "Offer", value: "offer", color: "bg-green-100 text-green-700" },
-    { label: "Rejected", value: "rejected", color: "bg-red-100 text-red-700" },
-]
+import { APPLICATION_STATUS_MAP, APPLICATION_STATUS_OPTIONS } from "@/lib/status-config"
+import { formatTimeAgo } from "@/lib/utils"
 
 const AdminApplicants = () => {
     const [applications, setApplications] = useState<Application[]>([])
@@ -106,10 +100,7 @@ const AdminApplicants = () => {
                                 const user = userMap[app.userId]
                                 const job = jobMap[app.jobId]
                                 const company = job ? companyMap[job.companyId] : null
-                                const appliedDays = Math.floor(
-                                    (Date.now() - new Date(app.appliedAt).getTime()) / (1000 * 60 * 60 * 24)
-                                )
-                                const statusObj = statusOptions.find((s) => s.value === app.status) ?? statusOptions[0]
+                                const statusObj = APPLICATION_STATUS_MAP[app.status]
 
                                 return (
                                     <tr key={app.id}>
@@ -135,9 +126,9 @@ const AdminApplicants = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{appliedDays}d ago</td>
+                                        <td>{formatTimeAgo(app.appliedAt)}</td>
                                         <td>
-                                            <span className={`px-2 py-1 rounded text-xs ${statusObj.color}`}>{statusObj.label}</span>
+                                            <span className={`px-2 py-1 rounded text-xs ${statusObj.chipClass}`}>{statusObj.label}</span>
                                         </td>
                                         <td className="relative">
                                             <div className="inline-block w-full">
@@ -157,7 +148,7 @@ const AdminApplicants = () => {
                                                 </button>
                                                 {dropdownOpen === idx && (
                                                     <div className="absolute z-10 mt-1 w-36 bg-white border rounded shadow-lg">
-                                                        {statusOptions.map((option) => (
+                                                        {APPLICATION_STATUS_OPTIONS.map((option) => (
                                                             <button
                                                                 key={option.value}
                                                                 className={`w-full text-left px-4 py-2 text-sm hover:bg-neutral-100 ${option.value === app.status ? "bg-neutral-100 font-semibold" : ""}`}

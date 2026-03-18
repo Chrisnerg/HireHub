@@ -3,14 +3,9 @@ import type { DashboardStats } from "../actions/dashboard"
 import type { Application } from "../actions/applications"
 import type { Job } from "../actions/jobs"
 import type { Company } from "../actions/companies"
-
-const statusColors: Record<string, string> = {
-    interview: "text-purple-700",
-    reviewing: "text-yellow-700",
-    applied: "text-blue-700",
-    offer: "text-green-700",
-    rejected: "text-red-600",
-}
+import { APPLICATION_STATUS_MAP } from "@/lib/status-config"
+import { formatTimeAgo } from "@/lib/utils"
+import StatCard from "./StatCard"
 
 type Props = {
     stats: DashboardStats
@@ -25,26 +20,10 @@ const DashboardOverview = ({ stats, applications, jobMap, companyMap }: Props) =
     return (
         <div className="w-full flex flex-col items-center mt-6">
             <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-base-100 rounded-xl shadow p-6 flex flex-col items-center border border-gray-100">
-                    <FaGift className="text-3xl text-blue-500 mb-2" />
-                    <span className="text-2xl font-bold text-blue-700">{stats.totalApplied}</span>
-                    <span className="text-gray-500 text-sm mt-1">Total Applied</span>
-                </div>
-                <div className="bg-base-100 rounded-xl shadow p-6 flex flex-col items-center border border-gray-100">
-                    <FaCheckCircle className="text-3xl text-purple-500 mb-2" />
-                    <span className="text-2xl font-bold text-purple-700">{stats.inInterview}</span>
-                    <span className="text-gray-500 text-sm mt-1">In Interview</span>
-                </div>
-                <div className="bg-base-100 rounded-xl shadow p-6 flex flex-col items-center border border-gray-100">
-                    <FaChartLine className="text-3xl text-green-500 mb-2" />
-                    <span className="text-2xl font-bold text-green-700">{stats.offers}</span>
-                    <span className="text-gray-500 text-sm mt-1">Offers</span>
-                </div>
-                <div className="bg-base-100 rounded-xl shadow p-6 flex flex-col items-center border border-gray-100">
-                    <FaBookmark className="text-3xl text-orange-500 mb-2" />
-                    <span className="text-2xl font-bold text-orange-700">{stats.savedCount}</span>
-                    <span className="text-gray-500 text-sm mt-1">Saved Jobs</span>
-                </div>
+                <StatCard value={stats.totalApplied} label="Total Applied" valueClassName="text-blue-700" icon={<FaGift className="text-blue-500" />} />
+                <StatCard value={stats.inInterview} label="In Interview" valueClassName="text-purple-700" icon={<FaCheckCircle className="text-purple-500" />} />
+                <StatCard value={stats.offers} label="Offers" valueClassName="text-green-700" icon={<FaChartLine className="text-green-500" />} />
+                <StatCard value={stats.savedCount} label="Saved Jobs" valueClassName="text-orange-700" icon={<FaBookmark className="text-orange-500" />} />
             </div>
 
             <div className="w-full max-w-5xl bg-base-100 rounded-xl shadow p-4 border border-gray-100">
@@ -59,10 +38,7 @@ const DashboardOverview = ({ stats, applications, jobMap, companyMap }: Props) =
                             const job = jobMap[app.jobId]
                             const company = job ? companyMap[job.companyId] : null
                             const initials = (company?.name ?? "??").slice(0, 2).toUpperCase()
-                            const appliedDays = Math.floor(
-                                (Date.now() - new Date(app.appliedAt).getTime()) / (1000 * 60 * 60 * 24)
-                            )
-                            const colorClass = statusColors[app.status] ?? "text-gray-600"
+                            const colorClass = APPLICATION_STATUS_MAP[app.status]?.textClass ?? "text-gray-600"
 
                             return (
                                 <div key={app.id} className="flex items-center py-4">
@@ -74,11 +50,11 @@ const DashboardOverview = ({ stats, applications, jobMap, companyMap }: Props) =
                                     <div className="flex flex-col flex-1">
                                         <span className="font-medium">{job?.title ?? "Unknown Job"}</span>
                                         <span className="text-xs text-gray-500">
-                                            {company?.name ?? "Unknown"} · Applied {appliedDays}d ago
+                                            {company?.name ?? "Unknown"} · Applied {formatTimeAgo(app.appliedAt)}
                                         </span>
                                     </div>
                                     <span className={`badge badge-md badge-outline font-medium ${colorClass}`}>
-                                        {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                        {APPLICATION_STATUS_MAP[app.status]?.label ?? app.status}
                                     </span>
                                 </div>
                             )

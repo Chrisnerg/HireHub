@@ -3,6 +3,13 @@ import axios from "axios"
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
+const serverInternalRequestConfig =
+  typeof window === "undefined"
+    ? {
+        proxy: false as const,
+      }
+    : undefined
+
 export type Company = {
   id: string
   name: string
@@ -17,7 +24,7 @@ export type Company = {
 
 export async function getCompanies(): Promise<Company[]> {
   try {
-    const { data } = await axios.get(`${getBaseUrl()}/api/companies`)
+    const { data } = await axios.get(`${getBaseUrl()}/api/companies`, serverInternalRequestConfig)
     return data.companies ?? []
   } catch {
     return []
@@ -26,7 +33,7 @@ export async function getCompanies(): Promise<Company[]> {
 
 export async function getCompanyById(id: string): Promise<Company | null> {
   try {
-    const { data } = await axios.get(`${getBaseUrl()}/api/companies/${id}`)
+    const { data } = await axios.get(`${getBaseUrl()}/api/companies/${id}`, serverInternalRequestConfig)
     return data.company ?? null
   } catch {
     return null

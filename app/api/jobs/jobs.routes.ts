@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 import { jobsTable } from "@/lib/db/jobs";
 import { companiesTable } from "@/lib/db/companies";
+import { EXPERIENCE_LEVELS, JOB_STATUSES, JOB_TYPES, UUID_REGEX, type ExperienceLevel, type JobStatus, type JobType } from "@/lib/constants";
 import { desc, eq } from "drizzle-orm";
 
 // GET /api/jobs and GET /api/jobs?featured=true
@@ -26,11 +27,6 @@ export const GET = async (request: NextRequest) => {
         return NextResponse.json({ error: "Failed to fetch jobs." }, { status: 500 });
     }
 };
-
-const VALID_JOB_TYPES = ['full-time', 'part-time', 'contract', 'internship'] as const;
-const VALID_EXPERIENCE_LEVELS = ['intern', 'junior', 'mid', 'senior', 'lead'] as const;
-const VALID_JOB_STATUSES = ['active', 'closed'] as const;
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // POST /api/jobs
 export const POST = async (request: Request) => {
@@ -79,16 +75,16 @@ export const POST = async (request: Request) => {
         return NextResponse.json({ error: "Failed to verify company." }, { status: 500 });
     }
 
-    if (!VALID_JOB_TYPES.includes(type as typeof VALID_JOB_TYPES[number])) {
+    if (!JOB_TYPES.includes(type as JobType)) {
         return NextResponse.json(
-            { error: `Invalid type. Must be one of: ${VALID_JOB_TYPES.join(', ')}.` },
+            { error: `Invalid type. Must be one of: ${JOB_TYPES.join(', ')}.` },
             { status: 400 }
         );
     }
 
-    if (!VALID_EXPERIENCE_LEVELS.includes(experienceLevel as typeof VALID_EXPERIENCE_LEVELS[number])) {
+    if (!EXPERIENCE_LEVELS.includes(experienceLevel as ExperienceLevel)) {
         return NextResponse.json(
-            { error: `Invalid experienceLevel. Must be one of: ${VALID_EXPERIENCE_LEVELS.join(', ')}.` },
+            { error: `Invalid experienceLevel. Must be one of: ${EXPERIENCE_LEVELS.join(', ')}.` },
             { status: 400 }
         );
     }
@@ -105,9 +101,9 @@ export const POST = async (request: Request) => {
         return NextResponse.json({ error: "salaryMax must be an integer." }, { status: 400 });
     }
 
-    if (status !== undefined && !VALID_JOB_STATUSES.includes(status as typeof VALID_JOB_STATUSES[number])) {
+    if (status !== undefined && !JOB_STATUSES.includes(status as JobStatus)) {
         return NextResponse.json(
-            { error: `Invalid status. Must be one of: ${VALID_JOB_STATUSES.join(', ')}.` },
+            { error: `Invalid status. Must be one of: ${JOB_STATUSES.join(', ')}.` },
             { status: 400 }
         );
     }
@@ -119,12 +115,12 @@ export const POST = async (request: Request) => {
             description: description as string,
             requirements: requirements as string | undefined,
             skills: skills as string[] | undefined,
-            type: type as typeof VALID_JOB_TYPES[number],
-            experienceLevel: experienceLevel as typeof VALID_EXPERIENCE_LEVELS[number],
+            type: type as JobType,
+            experienceLevel: experienceLevel as ExperienceLevel,
             location: location as string,
             salaryMin: salaryMin as number | undefined,
             salaryMax: salaryMax as number | undefined,
-            status: (status as typeof VALID_JOB_STATUSES[number] | undefined) ?? 'active',
+            status: (status as JobStatus | undefined) ?? 'active',
             isFeatured: typeof isFeatured === "boolean" ? isFeatured : false,
             deadline: deadline ? new Date(deadline as string) : null,
         }).returning({ jobId: jobsTable.id });

@@ -5,7 +5,7 @@ import JobCard from "./components/JobCard";
 import { getFeaturedJobs } from "./actions/jobs";
 import { getCompanies } from "./actions/companies";
 
-const page = async () => {
+const HomePage = async () => {
   const [featuredJobs, companies] = await Promise.all([getFeaturedJobs(), getCompanies()])
   const companyMap = Object.fromEntries(companies.map((c) => [c.id, c]))
 
@@ -38,4 +38,4 @@ const page = async () => {
   )
 }
 
-export default page
+export default HomePage

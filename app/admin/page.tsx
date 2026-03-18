@@ -1,14 +1,41 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import AdminSidebar from "../components/AdminSidebar"
 import AdminOverview from "../components/AdminOverview"
 import AdminManageJobs from "../components/AdminManageJobs"
 import AdminApplicants from "../components/AdminApplicants"
 import AdminPostNewJob from "../components/AdminPostNewJob"
+import { decodeToken, getToken } from "../actions/auth"
+import Loading from "../loading"
 
-const Page = () => {
+const AdminPage = () => {
+    const router = useRouter()
     const [activeTab, setActiveTab] = useState("Overview")
+    const [checkingAuth, setCheckingAuth] = useState(true)
+
+    useEffect(() => {
+        const token = getToken()
+
+        if (!token) {
+            router.replace("/login")
+            return
+        }
+
+        const user = decodeToken(token)
+
+        if (!user || user.role !== "admin") {
+            router.replace("/")
+            return
+        }
+
+        setCheckingAuth(false)
+    }, [router])
+
+    if (checkingAuth) {
+        return <Loading />
+    }
 
     const renderTab = () => {
         switch (activeTab) {
@@ -31,4 +58,4 @@ const Page = () => {
     )
 }
 
-export default Page
+export default AdminPage
