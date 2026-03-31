@@ -32,9 +32,9 @@ const NavigationBar = () => {
 
     return (
         <header className="border-b border-slate-300/70 bg-[#f7f6f2]">
-            <div className="navbar mx-auto max-w-6xl px-3 sm:px-5">
+            <div className="navbar mx-auto max-w-6xl px-3 py-2 sm:px-5">
                 <div className="navbar-start">
-                    <Link href="/" className="rounded-xl px-2 py-1 text-xl font-heading font-bold tracking-tight text-slate-900 transition hover:opacity-80">
+                    <Link href="/" className="rounded-xl px-2 py-1 text-lg font-heading font-bold tracking-tight text-slate-900 transition hover:opacity-80 sm:text-xl">
                         Hire<span className="text-emerald-800">Hub</span>
                     </Link>
                 </div>
@@ -48,18 +48,24 @@ const NavigationBar = () => {
                     </Link>
                 </div>
 
-                <div className="navbar-end gap-2">
+                <div className="navbar-end flex items-center gap-2">
+                    <Link
+                        href="/jobs"
+                        className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 md:hidden"
+                    >
+                        Jobs
+                    </Link>
                     {isLoggedIn ? (
                         <>
                             <Link
                                 href={dashboardHref}
-                                className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900"
+                                className="hidden rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:inline-flex sm:text-sm"
                             >
                                 Dashboard
                             </Link>
                             <button
                                 onClick={handleSignOut}
-                                className="inline-flex rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
+                                className="inline-flex rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
                             >
                                 Sign Out
                             </button>
@@ -81,13 +87,13 @@ const NavigationBar = () => {
                         <>
                             <Link
                                 href="/login"
-                                className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900"
+                                className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:px-4 sm:text-sm"
                             >
                                 Sign In
                             </Link>
                             <Link
                                 href="/signup"
-                                className="inline-flex rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
+                                className="inline-flex rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
                             >
                                 Sign Up
                             </Link>

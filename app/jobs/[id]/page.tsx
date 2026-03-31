@@ -85,15 +85,15 @@ const JobDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
         <div>
             <NavigationBar />
 
-            <div className="flex my-6 ml-64">
-                <Link href="/jobs" className="btn btn-ghost text-left rounded-md hover:bg-gray-800 hover:text-white text-base flex items-center gap-2 px-0">
+            <div className="mx-auto my-4 max-w-6xl px-4 sm:px-6 lg:px-8">
+                <Link href="/jobs" className="btn btn-ghost rounded-md px-2 text-sm hover:bg-gray-800 hover:text-white sm:text-base">
                     <IoMdArrowBack className="text-lg" />
                     Back to Jobs
                 </Link>
             </div>
 
-            <div className="flex flex-row justify-center w-full gap-8">
-                <div className="flex-1 max-w-3xl">
+            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-8 sm:px-6 lg:flex-row lg:items-start lg:gap-8 lg:px-8">
+                <div className="w-full lg:max-w-3xl lg:flex-1">
                     <JobDetailCard
                         jobId={job.id}
                         title={job.title}
@@ -113,7 +113,7 @@ const JobDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                     />
                 </div>
 
-                <div className="flex flex-col gap-6 w-full max-w-sm">
+                <div className="flex w-full flex-col gap-6 lg:max-w-sm">
                     <CompanyCard
                         name={company?.name ?? "Unknown"}
                         industry={company?.industry ?? ""}

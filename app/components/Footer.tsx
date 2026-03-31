@@ -18,7 +18,7 @@ const Footer = () => {
           </svg>
           <p className="text-sm">Copyright © {new Date().getFullYear()} HireHub. All rights reserved.</p>
         </aside>
-        <nav className="grid-flow-col gap-3 md:place-self-center md:justify-self-end">
+        <nav className="flex items-center gap-3 md:place-self-center md:justify-self-end">
           <a className="rounded-full border border-slate-300 p-2 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-900" aria-label="Twitter">
             <svg
               xmlns="http://www.w3.org/2000/svg"

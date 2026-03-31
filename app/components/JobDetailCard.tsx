@@ -71,7 +71,7 @@ const JobDetailCard = ({ jobId, title, company, industry, type, level, location,
                     <p className="badge badge-info badge-sm badge-soft px-1.5 mr-2.5">Featured</p>
                     <p className="border-b-2 mt-5"></p>
                 </div>
-                <div className="flex justify-evenly card-actions">
+                <div className="card-actions grid grid-cols-2 gap-4 sm:grid-cols-4">
                     <div>
                         <div className="flex items-center gap-1 text-gray-500">
                             <SlLocationPin className="text-xs" />
