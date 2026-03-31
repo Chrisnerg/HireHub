@@ -1,8 +1,21 @@
 import axios from "axios"
 import type { ExperienceLevel, JobStatus, JobType } from "@/lib/constants"
 
-const getBaseUrl = () =>
-  typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") return ""
+
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
+  if (configuredBaseUrl) {
+    return configuredBaseUrl.replace(/\/$/, "")
+  }
+
+  const vercelUrl = process.env.VERCEL_URL?.trim()
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`
+  }
+
+  return "http://localhost:3000"
+}
 
 const serverInternalRequestConfig =
   typeof window === "undefined"
