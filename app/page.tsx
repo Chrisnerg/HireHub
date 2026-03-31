@@ -5,6 +5,8 @@ import JobCard from "./components/JobCard";
 import { getFeaturedJobs } from "./actions/jobs";
 import { getCompanies } from "./actions/companies";
 
+export const dynamic = "force-dynamic"
+
 const HomePage = async () => {
   const [featuredJobs, companies] = await Promise.all([getFeaturedJobs(), getCompanies()])
   const companyMap = Object.fromEntries(companies.map((c) => [c.id, c]))

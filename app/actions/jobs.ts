@@ -4,14 +4,14 @@ import type { ExperienceLevel, JobStatus, JobType } from "@/lib/constants"
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""
 
-  const vercelUrl = process.env.VERCEL_URL?.trim()
-  if (vercelUrl) {
-    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`
-  }
-
   const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
   if (configuredBaseUrl && !configuredBaseUrl.includes("localhost")) {
     return configuredBaseUrl.replace(/\/$/, "")
+  }
+
+  const vercelUrl = process.env.VERCEL_URL?.trim()
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`
   }
 
   return configuredBaseUrl || "http://localhost:3000"
