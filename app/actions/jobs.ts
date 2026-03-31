@@ -4,17 +4,17 @@ import type { ExperienceLevel, JobStatus, JobType } from "@/lib/constants"
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""
 
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
-  if (configuredBaseUrl) {
-    return configuredBaseUrl.replace(/\/$/, "")
-  }
-
   const vercelUrl = process.env.VERCEL_URL?.trim()
   if (vercelUrl) {
     return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`
   }
 
-  return "http://localhost:3000"
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
+  if (configuredBaseUrl && !configuredBaseUrl.includes("localhost")) {
+    return configuredBaseUrl.replace(/\/$/, "")
+  }
+
+  return configuredBaseUrl || "http://localhost:3000"
 }
 
 const serverInternalRequestConfig =
@@ -64,7 +64,8 @@ export async function getJobs(): Promise<Job[]> {
   try {
     const { data } = await axios.get(`${getBaseUrl()}/api/jobs`, serverInternalRequestConfig)
     return data.jobs ?? []
-  } catch {
+  } catch (error) {
+    console.error("getJobs failed", error)
     return []
   }
 }
@@ -73,7 +74,8 @@ export async function getFeaturedJobs(): Promise<Job[]> {
   try {
     const { data } = await axios.get(`${getBaseUrl()}/api/jobs?featured=true`, serverInternalRequestConfig)
     return data.featuredJobs ?? []
-  } catch {
+  } catch (error) {
+    console.error("getFeaturedJobs failed", error)
     return []
   }
 }
@@ -82,7 +84,8 @@ export async function getJobById(id: string): Promise<Job | null> {
   try {
     const { data } = await axios.get(`${getBaseUrl()}/api/jobs/${id}`, serverInternalRequestConfig)
     return data.job ?? null
-  } catch {
+  } catch (error) {
+    console.error(`getJobById failed for ${id}`, error)
     return null
   }
 }

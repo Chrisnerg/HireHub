@@ -3,17 +3,17 @@ import axios from "axios"
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""
 
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
-  if (configuredBaseUrl) {
-    return configuredBaseUrl.replace(/\/$/, "")
-  }
-
   const vercelUrl = process.env.VERCEL_URL?.trim()
   if (vercelUrl) {
     return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`
   }
 
-  return "http://localhost:3000"
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim()
+  if (configuredBaseUrl && !configuredBaseUrl.includes("localhost")) {
+    return configuredBaseUrl.replace(/\/$/, "")
+  }
+
+  return configuredBaseUrl || "http://localhost:3000"
 }
 
 const serverInternalRequestConfig =
@@ -39,7 +39,8 @@ export async function getCompanies(): Promise<Company[]> {
   try {
     const { data } = await axios.get(`${getBaseUrl()}/api/companies`, serverInternalRequestConfig)
     return data.companies ?? []
-  } catch {
+  } catch (error) {
+    console.error("getCompanies failed", error)
     return []
   }
 }
@@ -48,7 +49,8 @@ export async function getCompanyById(id: string): Promise<Company | null> {
   try {
     const { data } = await axios.get(`${getBaseUrl()}/api/companies/${id}`, serverInternalRequestConfig)
     return data.company ?? null
-  } catch {
+  } catch (error) {
+    console.error(`getCompanyById failed for ${id}`, error)
     return null
   }
 }
