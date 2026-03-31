@@ -2,13 +2,26 @@ import NavigationBar from "./components/NavigationBar";
 import Hero from "./components/Hero";
 import JobsSectionHeader from "./components/JobsSectionHeader";
 import JobCard from "./components/JobCard";
-import { getFeaturedJobs } from "./actions/jobs";
-import { getCompanies } from "./actions/companies";
+import db from "@/lib/db";
+import { jobsTable } from "@/lib/db/jobs";
+import { companiesTable } from "@/lib/db/companies";
+import { desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic"
 
 const HomePage = async () => {
-  const [featuredJobs, companies] = await Promise.all([getFeaturedJobs(), getCompanies()])
+  const [featuredJobsRaw, latestJobs, companies] = await Promise.all([
+    db
+      .select()
+      .from(jobsTable)
+      .where(eq(jobsTable.isFeatured, true))
+      .orderBy(desc(jobsTable.postedAt))
+      .limit(4),
+    db.select().from(jobsTable).orderBy(desc(jobsTable.postedAt)).limit(4),
+    db.select().from(companiesTable),
+  ])
+
+  const featuredJobs = featuredJobsRaw.length > 0 ? featuredJobsRaw : latestJobs
   const companyMap = Object.fromEntries(companies.map((c) => [c.id, c]))
 
   return (
