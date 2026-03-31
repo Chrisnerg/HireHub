@@ -48,10 +48,10 @@ const NavigationBar = () => {
                     </Link>
                 </div>
 
-                <div className="navbar-end flex items-center gap-2">
+                <div className="navbar-end flex items-center gap-1.5 sm:gap-2">
                     <Link
                         href="/jobs"
-                        className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 md:hidden"
+                        className="rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 md:hidden"
                     >
                         Jobs
                     </Link>
@@ -59,13 +59,13 @@ const NavigationBar = () => {
                         <>
                             <Link
                                 href={dashboardHref}
-                                className="hidden rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:inline-flex sm:text-sm"
+                                className="hidden whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:inline-flex sm:text-sm"
                             >
                                 Dashboard
                             </Link>
                             <button
                                 onClick={handleSignOut}
-                                className="inline-flex rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
+                                className="inline-flex whitespace-nowrap rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
                             >
                                 Sign Out
                             </button>
@@ -87,13 +87,13 @@ const NavigationBar = () => {
                         <>
                             <Link
                                 href="/login"
-                                className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:px-4 sm:text-sm"
+                                className="whitespace-nowrap rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-slate-900 sm:px-4 sm:text-sm"
                             >
                                 Sign In
                             </Link>
                             <Link
                                 href="/signup"
-                                className="inline-flex rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
+                                className="inline-flex whitespace-nowrap rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-900 sm:px-4 sm:text-sm"
                             >
                                 Sign Up
                             </Link>
