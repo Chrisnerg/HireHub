@@ -14,8 +14,19 @@ const shouldUseRelaxedSsl =
 	databaseUrl.includes('pooler.supabase.com') ||
 	databaseUrl.includes('sslmode=require');
 
+const normalizedDatabaseUrl = (() => {
+	if (!shouldUseRelaxedSsl) return databaseUrl;
+
+	const parsedUrl = new URL(databaseUrl);
+	parsedUrl.searchParams.delete('sslmode');
+	parsedUrl.searchParams.delete('sslrootcert');
+	parsedUrl.searchParams.delete('sslcert');
+	parsedUrl.searchParams.delete('sslkey');
+	return parsedUrl.toString();
+})();
+
 const pool = new Pool({
-	connectionString: databaseUrl,
+	connectionString: normalizedDatabaseUrl,
 	ssl: shouldUseRelaxedSsl ? { rejectUnauthorized: false } : undefined,
 });
 
