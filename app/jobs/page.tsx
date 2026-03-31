@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/pagination"
 import JobCard from "../components/JobCard";
 import BrowseJobs from "../components/BrowseJobs";
-import { getJobs } from "../actions/jobs";
-import { getCompanies } from "../actions/companies";
+import db from "@/lib/db";
+import { jobsTable } from "@/lib/db/jobs";
+import { companiesTable } from "@/lib/db/companies";
+import { desc } from "drizzle-orm";
 
 const JOBS_PER_PAGE = 6
 
@@ -18,7 +20,10 @@ const JobsPage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
     const { page: pageParam } = await searchParams
     const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1)
 
-    const [jobs, companies] = await Promise.all([getJobs(), getCompanies()])
+    const [jobs, companies] = await Promise.all([
+        db.select().from(jobsTable).orderBy(desc(jobsTable.postedAt)),
+        db.select().from(companiesTable),
+    ])
     const companyMap = Object.fromEntries(companies.map((c) => [c.id, c]))
 
     const totalPages = Math.max(1, Math.ceil(jobs.length / JOBS_PER_PAGE))
