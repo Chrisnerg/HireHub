@@ -102,6 +102,29 @@ const NavigationBar = () => {
 
                 </div>
             </div>
+            {isLoggedIn && (
+                <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 pb-3 sm:hidden">
+                    <div className="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-2">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-xs font-bold uppercase text-white">
+                            {userName.slice(0, 1)}
+                        </div>
+                        <div className="min-w-0 leading-tight">
+                            <p className="max-w-28 truncate text-xs font-semibold text-slate-900">
+                                {userName}
+                            </p>
+                            <p className="max-w-32 truncate text-[11px] text-slate-600">
+                                {userEmail}
+                            </p>
+                        </div>
+                    </div>
+                    <Link
+                        href={dashboardHref}
+                        className="inline-flex shrink-0 whitespace-nowrap rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
+                    >
+                        Dashboard
+                    </Link>
+                </div>
+            )}
         </header>
     )
 }

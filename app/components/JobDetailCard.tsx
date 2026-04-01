@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BsBookmark, BsCheck2 } from "react-icons/bs"
 import { SlLocationPin } from "react-icons/sl"
 import { PiMoney } from "react-icons/pi"
 import { WiTime5 } from "react-icons/wi"
 import { LuUsersRound } from "react-icons/lu"
 import { applyToJob } from "@/app/actions/applications"
-import { toggleSaveJob } from "@/app/actions/savedJobs"
+import { getSavedJobs, toggleSaveJob } from "@/app/actions/savedJobs"
 import { getToken } from "@/app/actions/auth"
 
 type JobDetailCardProps = {
@@ -25,9 +25,36 @@ type JobDetailCardProps = {
 
 const JobDetailCard = ({ jobId, title, company, industry, type, level, location, salary, applicants, posted }: JobDetailCardProps) => {
     const [saved, setSaved] = useState(false)
+    const [saveLoading, setSaveLoading] = useState(true)
     const [applying, setApplying] = useState(false)
     const [applyMessage, setApplyMessage] = useState("")
     const [applyMessageType, setApplyMessageType] = useState<"error" | "success" | "info">("info")
+
+    useEffect(() => {
+        const token = getToken()
+        if (!token) {
+            setSaved(false)
+            setSaveLoading(false)
+            return
+        }
+
+        let cancelled = false
+
+        const loadSavedState = async () => {
+            setSaveLoading(true)
+            const savedJobs = await getSavedJobs(token)
+            if (cancelled) return
+
+            setSaved(savedJobs.some((savedJob) => savedJob.jobId === jobId))
+            setSaveLoading(false)
+        }
+
+        void loadSavedState()
+
+        return () => {
+            cancelled = true
+        }
+    }, [jobId])
 
     const handleApply = async () => {
         const token = getToken()
@@ -45,10 +72,19 @@ const JobDetailCard = ({ jobId, title, company, industry, type, level, location,
     const handleSave = async () => {
         const token = getToken()
         if (!token) { setApplyMessage("Please log in to save jobs."); setApplyMessageType("error"); return }
+        if (saveLoading) return
+
+        setSaveLoading(true)
         const result = await toggleSaveJob(token, jobId)
         if (result.success) {
             setSaved(result.action === "saved")
+            setApplyMessage(result.action === "saved" ? "Job saved." : "Job removed from saved jobs.")
+            setApplyMessageType("success")
+        } else {
+            setApplyMessage(result.error ?? "Failed to update saved job.")
+            setApplyMessageType("error")
         }
+        setSaveLoading(false)
     }
 
     return (
@@ -113,9 +149,11 @@ const JobDetailCard = ({ jobId, title, company, industry, type, level, location,
                         {applying ? "Applying..." : "Apply Now"}
                     </button>
                     <button
-                        className={`btn w-10 h-10 border rounded-md flex items-center justify-center p-0 transition-colors duration-150 ${saved ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-neutral-200 text-black hover:bg-blue-50"}`}
+                        className={`btn h-10 w-10 shrink-0 border rounded-md p-0 transition-colors duration-150 ${saved ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-neutral-200 text-black hover:bg-blue-50"} ${saveLoading ? "cursor-wait opacity-70" : ""}`}
                         onClick={handleSave}
+                        disabled={saveLoading}
                         aria-label={saved ? "Saved" : "Save"}
+                        aria-pressed={saved}
                     >
                         {saved ? (
                             <span className="relative flex items-center justify-center">
